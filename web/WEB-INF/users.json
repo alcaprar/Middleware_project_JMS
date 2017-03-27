@@ -1,0 +1,21 @@
+[
+  {
+    "username": "ale",
+    "following": [
+      {"username": "alex"},
+      {"username": "jorge"}
+    ]
+  },
+  {
+    "username": "alex",
+    "following": [
+      {"username": "ale"}
+    ]
+  },
+  {
+    "username": "jorge",
+    "following": [
+      {"username": "ale"}
+    ]
+  }
+]
