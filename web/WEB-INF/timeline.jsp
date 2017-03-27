@@ -22,10 +22,16 @@
   <div class="row">
       ${following}
     <div class="col-xs-12 well" style="margin-top: 15px; padding-bottom: 15px">
-      <form accept-charset="UTF-8" action="${pageContext.request.contextPath}/post?username=${username}" method="POST">
+      <form id="send_post" accept-charset="UTF-8" action="${pageContext.request.contextPath}/post?username=${username}" method="POST">
               <textarea class="col-xs-12" id="new_message" name="new_message" placeholder="Type in your message" rows="5" style="margin-bottom: 5px"></textarea>
         <h6 class="pull-right">320 characters remaining</h6>
-        <button class="btn btn-info" type="submit">Post New Message</button>
+          <div class="col-xs-3">
+              <button class="btn btn-info" type="submit">Post New Message</button>
+          </div>
+          <div class="col-xs-3">
+              <input type="file" name="Image" id="image">
+          </div>
+
       </form>
     </div>
   </div>
@@ -73,5 +79,16 @@
 
   </div>
 </div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
+<script>
+    $(document).ready(function() {
+        // bind 'myForm' and provide a simple callback function
+        $('#send_post').ajaxForm(function() {
+            alert("Post added!");
+        });
+    });
+</script>
+
 </body>
 </html>
