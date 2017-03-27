@@ -1,6 +1,5 @@
 package middleware;
 
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,10 +47,5 @@ public class Users {
         }
 
         return followers;
-    }
-
-    public static void main(String args[]) {
-        Users us = new Users();
-        System.out.println(us.getFollowers("jorge"));
     }
 }

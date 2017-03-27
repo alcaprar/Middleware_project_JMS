@@ -20,7 +20,7 @@
 
 <div class="container">
   <div class="row">
-      ${fullPath}
+      ${following}
     <div class="col-xs-12 well" style="margin-top: 15px; padding-bottom: 15px">
       <form accept-charset="UTF-8" action="${pageContext.request.contextPath}/post?username=${username}" method="POST">
               <textarea class="col-xs-12" id="new_message" name="new_message" placeholder="Type in your message" rows="5" style="margin-bottom: 5px"></textarea>
