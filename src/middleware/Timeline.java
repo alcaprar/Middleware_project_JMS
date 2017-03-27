@@ -11,22 +11,14 @@ import middleware.Users;
 
 public class Timeline extends HttpServlet{
 
-    private String message;
-
     public void init() throws ServletException
     {
-        // Do required initialization
-        message = "Hello World";
     }
 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response)
             throws ServletException, IOException
     {
-        //System.out.println("ciao");
-        // Set response content type
-        //response.setContentType("text/html");
-
         String username = request.getParameter("username");
 
 
