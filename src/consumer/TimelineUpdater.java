@@ -1,7 +1,10 @@
 package consumer;
 
+
 import javax.jms.*;
-import javax.naming.*;
+import javax.naming.InitialContext;
+
+import consumer.listener.TimelineUpdaterListener;
 
 /**
  * Created by vsywn9 on 3/28/2017.
@@ -11,7 +14,13 @@ public class TimelineUpdater implements Runnable{
     private Thread t;
     private String threadName = "[TimelineUpdater]";
 
-    public static Context ictx = null;
+    final static public String CONNECTION_FACTORY = "InstaTweetConnectionFactory";
+    final static public String TIMELINE_UPDATE_QUEUE = "TimelineUpdaterQueue";
+
+    private InitialContext ctx;
+    private QueueConnectionFactory cf;
+    private QueueConnection conn;
+    private QueueSession ses;
 
     TimelineUpdater(){
         System.out.println(threadName + " Creating.");
@@ -19,26 +28,35 @@ public class TimelineUpdater implements Runnable{
 
     public void run(){
         try{
+            //1)Create and start connection
+            ctx = new InitialContext();
+            cf = (QueueConnectionFactory) ctx.lookup(CONNECTION_FACTORY);
+            conn = cf.createQueueConnection();
+            conn.start();
+            //2) create queue session
+            ses = conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            InitialContext ictx=new InitialContext();
-            TopicConnectionFactory cf =(TopicConnectionFactory) ictx.lookup("jms/DurableConnectionFactory");
-            TopicConnection con= cf.createTopicConnection();
-            con.start();
+            //3) get the Queue object
+            Queue timelineUpdaterQueue = (Queue) ctx.lookup(TIMELINE_UPDATE_QUEUE);
 
-            Connection cnx = cf.createConnection();
-            Session sess = cnx.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Topic posts = null;
-            MessageConsumer recv = sess.createConsumer(posts);
-            cnx.start();
-            Message message = recv.receive(10000);
-            while (message!=null){
-                System.out.println(threadName+" Received a msg.");
-                message = recv.receive(10000);
+            //4)create QueueReceiver
+            QueueReceiver receiver = ses.createReceiver(timelineUpdaterQueue);
+
+            //5) create listener object
+            TimelineUpdaterListener listener = new TimelineUpdaterListener();
+
+            //6) register the listener object with receiver
+            receiver.setMessageListener(listener);
+
+            System.out.println(threadName + "is ready, waiting for messages...");
+            System.out.println("...press Ctrl+c to shutdown...");
+            while(true){
+                Thread.sleep(1000);
             }
-            cnx.close();
+
         }catch (Exception e){
             System.out.println(threadName + " Stopped.");
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 

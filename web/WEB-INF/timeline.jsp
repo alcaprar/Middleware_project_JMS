@@ -22,7 +22,7 @@
   <div class="row">
       ${following}
     <div class="col-xs-12 well" style="margin-top: 15px; padding-bottom: 15px">
-      <form id="send_post" accept-charset="UTF-8" action="${pageContext.request.contextPath}/post?username=${username}" method="POST">
+      <form id="send_post" accept-charset="UTF-8" action="${pageContext.request.contextPath}/post" method="POST">
               <textarea class="col-xs-12" id="new_message" name="new_message" placeholder="Type in your message" rows="5" style="margin-bottom: 5px"></textarea>
         <h6 class="pull-right">320 characters remaining</h6>
           <div class="col-xs-3">
@@ -31,6 +31,7 @@
           <div class="col-xs-3">
               <input type="file" name="Image" id="image">
           </div>
+        <input type="text" hidden value="${username}" name="username">
 
       </form>
     </div>
