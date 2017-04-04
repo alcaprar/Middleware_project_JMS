@@ -10,8 +10,8 @@ import consumer.TimelineUpdater;
 public class ConsumerManager {
 
     public static void main(String args[]) {
-        ThumbnailCreator thumbnailCreator = new ThumbnailCreator();
-        thumbnailCreator.start();
+        //ThumbnailCreator thumbnailCreator = new ThumbnailCreator();
+        //thumbnailCreator.start();
 
         ImageStorer imageStorer = new ImageStorer();
         imageStorer.start();

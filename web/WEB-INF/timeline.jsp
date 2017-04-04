@@ -1,3 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!doctype html>
 
 <html lang="en">
@@ -20,7 +23,6 @@
 
 <div class="container">
   <div class="row">
-      ${following}
     <div class="col-xs-12 well" style="margin-top: 15px; padding-bottom: 15px">
       <form id="send_post" accept-charset="UTF-8" action="${pageContext.request.contextPath}/post" method="POST">
               <textarea class="col-xs-12" id="new_message" name="new_message" placeholder="Type in your message" rows="5" style="margin-bottom: 5px"></textarea>
@@ -29,7 +31,7 @@
               <button class="btn btn-info" type="submit">Post New Message</button>
           </div>
           <div class="col-xs-3">
-              <input type="file" name="Image" id="image">
+              <input type="file" name="image" id="image">
           </div>
         <input type="text" hidden value="${username}" name="username">
 
@@ -39,7 +41,9 @@
   <div class="row">
 
     <div class="timeline-centered">
-
+      <c:set var="num_posts" value="${fn:length(posts)}" />
+      <c:forEach var="i" begin="1" end="${num_posts}" step="1">
+        <c:set var="post" value="${posts[num_posts-i]}" />
       <article class="timeline-entry">
 
         <div class="timeline-entry-inner">
@@ -49,31 +53,15 @@
           </div>
 
           <div class="timeline-label">
-            <h2><a href="#">Art Ramadani</a> <span>posted a status update</span></h2>
-              <blockquote>Pianoforte principles our unaffected not for astonished travelling are particular.</blockquote>
+            <h2 title="${post.time}"><a href=""><c:out value="${post.username}"/></a> <span>posted a status update</span></h2>
+              <blockquote><c:out value="${post.text}"/></blockquote>
+            <img style="display: none;" src="http://themes.laborator.co/neon/assets/images/timeline-image-3.png" class="img-responsive img-rounded full-width">
+
           </div>
         </div>
 
       </article>
-
-      <article class="timeline-entry">
-
-        <div class="timeline-entry-inner">
-
-          <div class="timeline-icon bg-warning">
-            <i class="entypo-camera"></i>
-          </div>
-
-          <div class="timeline-label">
-            <h2><a href="#">Arber Nushi</a> <span>changed his</span> <a href="#">Profile Picture</a></h2>
-
-            <blockquote>Pianoforte principles our unaffected not for astonished travelling are particular.</blockquote>
-
-            <img src="http://themes.laborator.co/neon/assets/images/timeline-image-3.png" class="img-responsive img-rounded full-width">
-          </div>
-        </div>
-
-      </article>
+      </c:forEach>
 
     </div>
 
