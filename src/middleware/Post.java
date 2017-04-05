@@ -3,13 +3,19 @@ package middleware;
 import consumer.ThumbnailCreator;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.jms.*;
 import javax.naming.InitialContext;
 import javax.servlet.*;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
 
+import org.apache.commons.io.IOUtils;
+import sun.nio.ch.IOUtil;
+
+@MultipartConfig
 public class Post extends HttpServlet{
 
     final static public String CONNECTION_FACTORY = "InstaTweetConnectionFactory";
@@ -42,7 +48,7 @@ public class Post extends HttpServlet{
 
         String username = request.getParameter("username");
         String text = request.getParameter("new_message");
-        String imageByte = request.getParameter("image");
+
 
         out.println("Post from: " + username);
         out.println(text);
@@ -54,7 +60,15 @@ public class Post extends HttpServlet{
                 msg.setString("username", username);
                 msg.setString("text", text);
                 msg.setString("time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                msg.setString("image", imageByte);
+
+
+                if (request.getContentType() != null && request.getContentType().toLowerCase().contains("multipart/form-data")){
+                    Part filePart = request.getPart("image"); // Retrieves <input type="file" name="file">
+                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+                    InputStream fileContent = filePart.getInputStream();
+                    msg.setString("imageName", fileName);
+                    //msg.setBytes("image", IOUtils.toByteArray(fileContent));
+                }
 
                 //send the post to the queue to forward it to the right followers
 

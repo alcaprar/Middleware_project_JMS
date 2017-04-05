@@ -21,11 +21,17 @@ public class ImageStorerListener implements MessageListener{
             String username = msg.getString("username");
             String text = msg.getString("text");
             String time = msg.getString("time");
-            String imageByte = msg.getString("image");
+            String imageName = msg.getString("imageName");
+
 
             System.out.println("[IS] Message received from:" + username);
             System.out.println(text);
-            System.out.println(imageByte);
+            System.out.println(imageName);
+
+            if(imageName!=null){
+                //save image
+                byte[] imageContent = msg.getBytes("image");
+            }
 
         }catch(Exception e){
             e.printStackTrace();

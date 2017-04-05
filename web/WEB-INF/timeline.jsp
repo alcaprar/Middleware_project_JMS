@@ -25,8 +25,8 @@
   <div class="row">
     <div class="col-xs-12 well" style="margin-top: 15px; padding-bottom: 15px">
       <form id="send_post" accept-charset="UTF-8" action="${pageContext.request.contextPath}/post" method="POST">
-              <textarea class="col-xs-12" id="new_message" name="new_message" placeholder="Type in your message" rows="5" style="margin-bottom: 5px"></textarea>
-        <h6 class="pull-right">320 characters remaining</h6>
+              <textarea class="col-xs-12" id="new_message" name="new_message" placeholder="Type in your message" rows="5" maxlength="320" style="margin-bottom: 5px"></textarea>
+        <h6 class="pull-right"><span id="remaing_char">320</span> characters remaining</h6>
           <div class="col-xs-3">
               <button class="btn btn-info" type="submit">Post New Message</button>
           </div>
@@ -55,8 +55,11 @@
           <div class="timeline-label">
             <h2 title="${post.time}"><a href=""><c:out value="${post.username}"/></a> <span>posted a status update</span></h2>
               <blockquote><c:out value="${post.text}"/></blockquote>
-            <img style="display: none;" src="http://themes.laborator.co/neon/assets/images/timeline-image-3.png" class="img-responsive img-rounded full-width">
-
+            <c:if test="${not empty post.imageName}">
+            <a href="images/${post.imageName}">
+              <img src="images/thumbnails/${post.imageName}" class="img-responsive img-rounded full-width">
+            </a>
+            </c:if>
           </div>
         </div>
 
@@ -76,6 +79,11 @@
         $('#send_post').ajaxForm(function() {
             alert("Post added!");
         });
+
+        $('#new_message').on('keyup', function (e) {
+            $('#remaing_char').html(320-$('#new_message').val().length);
+
+        })
     });
 </script>
 

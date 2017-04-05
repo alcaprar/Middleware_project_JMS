@@ -58,7 +58,7 @@ public class Timeline extends HttpServlet{
                 conn.start();
                 MapMessage msg = (MapMessage) receiver.receiveNoWait();
                 while(msg!=null){
-                    Post post = new Post(msg.getString("username"), msg.getString("text"), msg.getString("time"));
+                    Post post = new Post(msg.getString("username"), msg.getString("text"), msg.getString("time"), msg.getString("imageName"));
                     posts.add(post);
                     conn.start();
                     msg = (MapMessage) receiver.receiveNoWait();

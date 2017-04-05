@@ -27,6 +27,7 @@ public class TimelineUpdaterListener implements MessageListener{
             String username = msg.getString("username");
             String text = msg.getString("text");
             String time = msg.getString("time");
+            String imageName = msg.getString("imageName");
 
             System.out.println("Message received from:" + username);
             System.out.println(text);
@@ -48,6 +49,9 @@ public class TimelineUpdaterListener implements MessageListener{
                 message.setString("username", username);
                 message.setString("text", text);
                 message.setString("time", time);
+                if(imageName!=null){
+                    message.setString("imageName",  imageName);
+                }
 
                 //send the post to the queue to forward it to the right followers
                 //3) get the Queue object
