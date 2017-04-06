@@ -56,8 +56,8 @@
             <h2 title="${post.time}"><a href=""><c:out value="${post.username}"/></a> <span>posted a status update</span></h2>
               <blockquote><c:out value="${post.text}"/></blockquote>
             <c:if test="${not empty post.imageName}">
-            <a href="images/${post.imageName}">
-              <img src="images?filename=${post.imageName}" class="img-responsive img-rounded full-width">
+            <a href="images?filename=${post.imageName}">
+              <img src="images?filename=tb-${post.imageName}" class="img-responsive img-rounded full-width">
             </a>
             </c:if>
           </div>
