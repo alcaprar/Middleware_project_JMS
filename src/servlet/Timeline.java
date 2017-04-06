@@ -1,8 +1,7 @@
-package middleware;
+package servlet;
 
 // Import required java libraries
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import javax.jms.*;
 import javax.naming.InitialContext;

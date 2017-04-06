@@ -1,6 +1,4 @@
-package middleware;
-
-import consumer.ThumbnailCreator;
+package servlet;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -11,9 +9,6 @@ import javax.naming.InitialContext;
 import javax.servlet.*;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
-
-import org.apache.commons.io.IOUtils;
-import sun.nio.ch.IOUtil;
 
 @MultipartConfig
 public class Post extends HttpServlet{
@@ -67,6 +62,9 @@ public class Post extends HttpServlet{
                     String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
                     InputStream fileContent = filePart.getInputStream();
                     msg.setString("imageName", fileName);
+                    byte[] targetArray = new byte[fileContent.available()];
+                    fileContent.read(targetArray);
+                    msg.setBytes("image", targetArray);
                     //msg.setBytes("image", IOUtils.toByteArray(fileContent));
                 }
 

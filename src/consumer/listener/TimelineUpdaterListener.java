@@ -6,9 +6,8 @@ import javax.naming.InitialContext;
 import data.*;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import static middleware.Post.CONNECTION_FACTORY;
+import static servlet.Post.CONNECTION_FACTORY;
 
 /**
  * Created by vsywn9 on 4/3/2017.

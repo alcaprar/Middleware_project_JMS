@@ -57,7 +57,7 @@
               <blockquote><c:out value="${post.text}"/></blockquote>
             <c:if test="${not empty post.imageName}">
             <a href="images/${post.imageName}">
-              <img src="images/thumbnails/${post.imageName}" class="img-responsive img-rounded full-width">
+              <img src="images?filename=${post.imageName}" class="img-responsive img-rounded full-width">
             </a>
             </c:if>
           </div>

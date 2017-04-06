@@ -12,5 +12,8 @@
   </head>
   <body>
   Hello !
+  <script>
+      window.location.replace("timeline?username=ale");
+  </script>
   </body>
 </html>
