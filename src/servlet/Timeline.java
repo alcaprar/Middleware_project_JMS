@@ -8,8 +8,7 @@ import javax.naming.InitialContext;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import data.*;
-import data.Post;
+import entity.Post;
 
 import static consumer.TimelineUpdater.CONNECTION_FACTORY;
 
@@ -32,10 +31,9 @@ public class Timeline extends HttpServlet{
                       HttpServletResponse response)
             throws ServletException, IOException
     {
-        Users users = new Users();
         String username = request.getParameter("username");
 
-        if(users.isValidUsername(username)){
+        if(true){
             //recover posts from queue
             ArrayList<Post> posts = new ArrayList<Post>();
 
