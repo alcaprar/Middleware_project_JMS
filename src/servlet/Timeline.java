@@ -8,9 +8,8 @@ import javax.naming.InitialContext;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import entity.Post;
+import entity.User;
 
-import static consumer.TimelineUpdater.CONNECTION_FACTORY;
 
 public class Timeline extends HttpServlet{
 
@@ -33,52 +32,13 @@ public class Timeline extends HttpServlet{
     {
         String username = request.getParameter("username");
 
-        if(true){
-            //recover posts from queue
-            ArrayList<Post> posts = new ArrayList<Post>();
-
-            try{
-
-
-                //1)Create and start connection
-                ctx = new InitialContext();
-                cf = (QueueConnectionFactory) ctx.lookup(CONNECTION_FACTORY);
-                conn = cf.createQueueConnection();
-                conn.start();
-                //2) create queue session
-                ses = conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-                //3) get the Queue object
-                Queue timelineUpdaterQueue = (Queue) ctx.lookup(username+"Queue");
-
-                //4)create QueueReceiver
-                QueueReceiver receiver = ses.createReceiver(timelineUpdaterQueue);
-                conn.start();
-                MapMessage msg = (MapMessage) receiver.receiveNoWait();
-                while(msg!=null){
-                    Post post = new Post(msg.getString("username"), msg.getString("text"), msg.getString("time"), msg.getString("imageName"));
-                    posts.add(post);
-                    conn.start();
-                    msg = (MapMessage) receiver.receiveNoWait();
-                }
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }finally {
-                if (conn != null) {
-                    try { conn.close(); }
-                    catch (JMSException e) { }
-                }
-            }
-
-            request.setAttribute("username", username);
-            request.setAttribute("posts", posts);
-            request.getRequestDispatcher("/WEB-INF/timeline.jsp").forward(request, response);
-        }else{
-            request.setAttribute("error", "Username not found.");
-            request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
-        }
-
-
+        System.out.println(username + " connected.");
+        //recover posts from mongodb
+        User user = new User();
+        user.load(username);
+        request.setAttribute("username", username);
+        request.setAttribute("posts", user.getTimeline());
+        request.getRequestDispatcher("/WEB-INF/timeline.jsp").forward(request, response);
     }
 
     public void destroy()

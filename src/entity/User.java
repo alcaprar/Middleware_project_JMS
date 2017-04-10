@@ -3,8 +3,6 @@ package entity;
 import java.util.ArrayList;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.IndexOptions;
 import org.bson.*;
@@ -13,8 +11,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.types.ObjectId;
-
-import javax.print.Doc;
 
 /**
  * Created by vsywn9 on 4/10/2017.
@@ -33,7 +29,7 @@ public class User {
     public User(){
         // Since 2.10.0, uses MongoClient
         MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-        MongoDatabase db = mongoClient.getDatabase("test");
+        MongoDatabase db = mongoClient.getDatabase("middleware");
         this.collection = db.getCollection("user");
         this.collection.createIndex(new BasicDBObject("username", 1), new IndexOptions().unique(true));
         this.document = new Document();
@@ -157,19 +153,7 @@ public class User {
                     }
                 }
             }
-            System.out.println(fans);
             this.setFans(fans);
         }
-    }
-
-    public static void main(String args[]){
-
-
-
-        //User j = new User();
-        //j.load("jorge");
-        //Post p = new Post("ale", "aaa", "1dasda", "asdasd");
-        //j.addPostToTimeline(p);
-
     }
 }

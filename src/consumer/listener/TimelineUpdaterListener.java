@@ -31,13 +31,13 @@ public class TimelineUpdaterListener implements MessageListener{
             System.out.println(text);
 
             User user = new User();
-            user.load("username");
-
-            /*for(String fan: user.getFans()){
+            user.load(username);
+            System.out.println(user.getFans());
+            for(String fan: user.getFans()){
                 User fanUser = new User();
                 fanUser.load(fan);
                 fanUser.addPostToTimeline(post);
-            }*/
+            }
         }catch (JMSException e){
             e.printStackTrace();
         }

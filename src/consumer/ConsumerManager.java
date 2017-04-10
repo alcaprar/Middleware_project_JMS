@@ -43,10 +43,10 @@ public class ConsumerManager {
         }
 
         ThumbnailCreator thumbnailCreator = new ThumbnailCreator();
-        //thumbnailCreator.start();
+        thumbnailCreator.start();
 
         ImageStorer imageStorer = new ImageStorer();
-        //imageStorer.start();
+        imageStorer.start();
 
         TimelineUpdater timelineUpdater = new TimelineUpdater();
         timelineUpdater.start();
