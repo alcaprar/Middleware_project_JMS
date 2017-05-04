@@ -14,7 +14,7 @@ public class ImageStorer implements Runnable{
     private String threadName = "[ImageStorer]";
 
     final static public String CONNECTION_FACTORY = "InstaTweetConnectionFactory";
-    final static public String NEW_POSTS_TOPIC = "NewPostsTopic";
+    final static public String NEW_IMAGES_TOPIC = "NewImagesTopic";
 
     private InitialContext ctx;
     private QueueConnectionFactory cf;
@@ -27,24 +27,24 @@ public class ImageStorer implements Runnable{
 
     public void run(){
         try{
-            //1)Create and start connection
+            // Create and start connection
             ctx = new InitialContext();
             cf = (QueueConnectionFactory) ctx.lookup(CONNECTION_FACTORY);
             conn = cf.createQueueConnection();
             conn.start();
-            //2) create queue session
+            // create queue session
             ses = conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            //3) get the Queue object
-            Topic timelineUpdaterQueue = (Topic) ctx.lookup(NEW_POSTS_TOPIC);
+            // get the Topic object
+            Topic newImagesTopic = (Topic) ctx.lookup(NEW_IMAGES_TOPIC);
 
-            //4)create QueueReceiver
-            MessageConsumer receiver = ses.createConsumer(timelineUpdaterQueue);
+            // create the consumer
+            MessageConsumer receiver = ses.createConsumer(newImagesTopic);
 
-            //5) create listener object
+            // create listener object
             ImageStorerListener listener = new ImageStorerListener();
 
-            //6) register the listener object with receiver
+            // register the listener object with consumer
             receiver.setMessageListener(listener);
 
             System.out.println(threadName + "is ready, waiting for messages...");

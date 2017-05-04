@@ -14,20 +14,20 @@ public class ImageStorerListener implements MessageListener{
         try{
             MapMessage msg = (MapMessage) m;
 
-            String username = msg.getString("username");
             String imageName = msg.getString("imageName");
 
-
-            System.out.println("[IS] Message received from:" + username);
-            System.out.println(imageName);
-
             if(imageName!=null){
-                //save image
+                System.out.println("[IS] Received image:" + imageName);
+
+                //get the bytes
                 byte[] imageContent = msg.getBytes("image");
 
+                //store the image to the hard disk
                 FileOutputStream fos = new FileOutputStream(uploadPath+imageName);
                 fos.write(imageContent);
                 fos.close();
+            }else{
+                System.out.println("[IS] ImageName is missing.");
             }
 
         }catch(Exception e){

@@ -19,26 +19,28 @@ public class ThumbnailCreatorListener implements MessageListener{
         try{
             MapMessage msg = (MapMessage) m;
 
-            String username = msg.getString("username");
             String imageName = msg.getString("imageName");
 
 
-            System.out.println("[IS] Message received from:" + username);
-            System.out.println(imageName);
-
             if(imageName!=null){
-                //save image
+                System.out.println("[TC] Received image:" + imageName);
+
+                //get the bytes
                 byte[] imageContent = msg.getBytes("image");
 
+                //create the new filename for the thumbnail
                 String filename = uploadPath+imageName;
                 String thumbnailFilename = uploadPath+"tb-"+imageName;
 
+                // store it to the hard disk
                 FileOutputStream fos = new FileOutputStream(filename);
                 fos.write(imageContent);
                 fos.close();
 
                 //create thumbnail
                 Thumbnails.of(new File(filename)).size(100,100).toFile(new File(thumbnailFilename));
+            }else{
+                System.out.println("[TC] ImageName is missing.");
             }
 
         }catch(Exception e){

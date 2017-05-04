@@ -14,7 +14,8 @@ import javax.servlet.http.*;
 public class Post extends HttpServlet{
 
     final static public String CONNECTION_FACTORY = "InstaTweetConnectionFactory";
-    final static public String NEW_POSTS_TOPIC = "NewPostsTopic";
+    final static private String NEW_POSTS_QUEUE = "NewPostsQueue";
+    final static private String NEW_IMAGES_TOPIC ="NewImagesQueue";
 
     private InitialContext ctx;
     private QueueConnectionFactory cf;
@@ -39,41 +40,51 @@ public class Post extends HttpServlet{
                       HttpServletResponse response)
             throws ServletException, IOException
     {
-        PrintWriter out = response.getWriter();
-
+        //retrieve parameters
         String username = request.getParameter("username");
         String text = request.getParameter("new_message");
 
 
-        out.println("Post from: " + username);
-        out.println(text);
-
         if(username!=null){
             try{
-                //create MapMessage object
+                //create MapMessage object to store the post
                 MapMessage msg = ses.createMapMessage();
                 msg.setString("username", username);
                 msg.setString("text", text);
                 msg.setString("time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
+                //send the post to the queue to forward it to the right followers
+                Queue newPostsQueue = (Queue) ctx.lookup(NEW_POSTS_QUEUE);
 
+                MessageProducer timelineUpdaterSender = ses.createProducer(newPostsQueue);
+                timelineUpdaterSender.send(msg);
+
+                //if the image is sent, send it to the topic
                 if (request.getContentType() != null && request.getContentType().toLowerCase().contains("multipart/form-data")){
-                    Part filePart = request.getPart("image"); // Retrieves <input type="file" name="file">
-                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+                    // Retrieves <input type="file" name="image">
+                    Part filePart = request.getPart("image");
+                    // Internet explorer fix.
+                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                    //get the file as an inputStream
                     InputStream fileContent = filePart.getInputStream();
-                    msg.setString("imageName", fileName);
+                    //convert the inputStream to a byte array in order to send it in a message (inputStream is not serializable)
                     byte[] targetArray = new byte[fileContent.available()];
-                    fileContent.read(targetArray);
-                    msg.setBytes("image", targetArray);
-                    //msg.setBytes("image", IOUtils.toByteArray(fileContent));
+                    //fileContent.read(targetArray);
+
+                    //create the message to send
+                    MapMessage imageMsg = ses.createMapMessage();
+                    imageMsg.setString("imageName", fileName);
+                    imageMsg.setBytes("image", targetArray);
+
+                    //send to the topic
+                    Topic newImagesTopic = (Topic) ctx.lookup(NEW_IMAGES_TOPIC);
+                    MessageProducer newImageSender = ses.createProducer(newImagesTopic);
+                    newImageSender.send(imageMsg);
                 }
 
-                //send the post to the queue to forward it to the right followers
-
-                Topic newPostsTopic = (Topic) ctx.lookup(NEW_POSTS_TOPIC);
-
-                MessageProducer timelineUpdaterSender = ses.createProducer(newPostsTopic);
-                timelineUpdaterSender.send(msg);
+                //send a response back to the browser
+                PrintWriter out = response.getWriter();
+                out.println("Post added.");
 
             }catch (Exception e){
                 e.printStackTrace();

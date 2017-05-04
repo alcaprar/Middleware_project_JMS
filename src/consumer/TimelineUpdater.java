@@ -15,7 +15,7 @@ public class TimelineUpdater implements Runnable{
     private String threadName = "[TimelineUpdater]";
 
     final static public String CONNECTION_FACTORY = "InstaTweetConnectionFactory";
-    final static public String NEW_POSTS_TOPIC = "NewPostsTopic";
+    final static public String NEW_POSTS_QUEUE = "NewPostsQueue";
 
     private InitialContext ctx;
     private QueueConnectionFactory cf;
@@ -28,24 +28,24 @@ public class TimelineUpdater implements Runnable{
 
     public void run(){
         try{
-            //1)Create and start connection
+            // create and start connection
             ctx = new InitialContext();
             cf = (QueueConnectionFactory) ctx.lookup(CONNECTION_FACTORY);
             conn = cf.createQueueConnection();
             conn.start();
-            //2) create queue session
+            // create queue session
             ses = conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            //3) get the Queue object
-            Topic timelineUpdaterQueue = (Topic) ctx.lookup(NEW_POSTS_TOPIC);
+            // get the Queue object
+            Queue timelineUpdaterQueue = (Queue) ctx.lookup(NEW_POSTS_QUEUE);
 
-            //4)create QueueReceiver
+            // create QueueReceiver
             MessageConsumer receiver = ses.createConsumer(timelineUpdaterQueue);
 
-            //5) create listener object
+            // create listener object
             TimelineUpdaterListener listener = new TimelineUpdaterListener();
 
-            //6) register the listener object with receiver
+            // register the listener object with receiver
             receiver.setMessageListener(listener);
 
             System.out.println(threadName + "is ready, waiting for messages...");
