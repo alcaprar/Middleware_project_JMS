@@ -36,6 +36,7 @@ public class Timeline extends HttpServlet{
         //recover posts from mongodb
         User user = new User();
         user.load(username);
+
         request.setAttribute("username", username);
         request.setAttribute("posts", user.getTimeline());
         request.getRequestDispatcher("/WEB-INF/timeline.jsp").forward(request, response);

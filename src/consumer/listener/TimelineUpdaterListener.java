@@ -33,6 +33,7 @@ public class TimelineUpdaterListener implements MessageListener{
             User user = new User();
             user.load(username);
             System.out.println(user.getFans());
+
             for(String fan: user.getFans()){
                 User fanUser = new User();
                 fanUser.load(fan);
