@@ -1,3 +1,4 @@
 # command line
 
-- to create a queue:
+- to list jms resources: `list-jms-resources`
+- to create a topic: `create-jms-resource --restype javax.jms.Topic --property Name=NewImagesTopic NewImagesTopic`

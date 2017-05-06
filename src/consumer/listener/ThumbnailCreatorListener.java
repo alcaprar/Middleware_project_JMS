@@ -29,7 +29,7 @@ public class ThumbnailCreatorListener implements MessageListener{
                 byte[] imageContent = msg.getBytes("image");
 
                 //create the new filename for the thumbnail
-                String filename = uploadPath+imageName;
+                String filename = uploadPath+ "temp" + imageName;
                 String thumbnailFilename = uploadPath+"tb-"+imageName;
 
                 // store it to the hard disk

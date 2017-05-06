@@ -15,12 +15,12 @@ public class Post extends HttpServlet{
 
     final static public String CONNECTION_FACTORY = "InstaTweetConnectionFactory";
     final static private String NEW_POSTS_QUEUE = "NewPostsQueue";
-    final static private String NEW_IMAGES_TOPIC ="NewImagesQueue";
+    final static private String NEW_IMAGES_TOPIC ="NewImagesTopic";
 
     private InitialContext ctx;
     private QueueConnectionFactory cf;
     private QueueConnection conn;
-    private QueueSession ses;
+    private QueueSession sess;
 
     public void init() throws ServletException{
         try {
@@ -29,8 +29,8 @@ public class Post extends HttpServlet{
             cf = (QueueConnectionFactory) ctx.lookup(CONNECTION_FACTORY);
             conn = cf.createQueueConnection();
             conn.start();
-            //2) create queue session
-            ses = conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+            //2) create queue sessions
+            sess = conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -48,16 +48,10 @@ public class Post extends HttpServlet{
         if(username!=null){
             try{
                 //create MapMessage object to store the post
-                MapMessage msg = ses.createMapMessage();
+                MapMessage msg = sess.createMapMessage();
                 msg.setString("username", username);
                 msg.setString("text", text);
                 msg.setString("time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-
-                //send the post to the queue to forward it to the right followers
-                Queue newPostsQueue = (Queue) ctx.lookup(NEW_POSTS_QUEUE);
-
-                MessageProducer timelineUpdaterSender = ses.createProducer(newPostsQueue);
-                timelineUpdaterSender.send(msg);
 
                 //if the image is sent, send it to the topic
                 if (request.getContentType() != null && request.getContentType().toLowerCase().contains("multipart/form-data")){
@@ -69,18 +63,26 @@ public class Post extends HttpServlet{
                     InputStream fileContent = filePart.getInputStream();
                     //convert the inputStream to a byte array in order to send it in a message (inputStream is not serializable)
                     byte[] targetArray = new byte[fileContent.available()];
-                    //fileContent.read(targetArray);
+                    fileContent.read(targetArray);
 
                     //create the message to send
-                    MapMessage imageMsg = ses.createMapMessage();
+                    MapMessage imageMsg = sess.createMapMessage();
                     imageMsg.setString("imageName", fileName);
+                    msg.setString("imageName", fileName);
                     imageMsg.setBytes("image", targetArray);
 
                     //send to the topic
                     Topic newImagesTopic = (Topic) ctx.lookup(NEW_IMAGES_TOPIC);
-                    MessageProducer newImageSender = ses.createProducer(newImagesTopic);
+                    MessageProducer newImageSender = sess.createProducer(newImagesTopic);
                     newImageSender.send(imageMsg);
                 }
+
+
+                //send the post to the queue to forward it to the right followers
+                Queue newPostsQueue = (Queue) ctx.lookup(NEW_POSTS_QUEUE);
+
+                MessageProducer timelineUpdaterSender = sess.createProducer(newPostsQueue);
+                timelineUpdaterSender.send(msg);
 
                 //send a response back to the browser
                 PrintWriter out = response.getWriter();
