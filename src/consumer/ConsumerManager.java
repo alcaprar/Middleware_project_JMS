@@ -42,6 +42,19 @@ public class ConsumerManager {
             e.printStackTrace();
         }
 
+
+        try {
+            User sam = new User();
+            sam.setUsername("sam");
+            ArrayList<String> samFollowers = new ArrayList<String>();
+            samFollowers.add("ale");
+            samFollowers.add("alex");
+            samFollowers.add("jorge");
+            sam.setFollowers(samFollowers);
+            sam.save();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         ThumbnailCreator thumbnailCreator = new ThumbnailCreator();
         thumbnailCreator.start();
 

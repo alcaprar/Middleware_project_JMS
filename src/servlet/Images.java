@@ -22,12 +22,7 @@ public class Images extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-        String thumbnails = request.getParameter("thumbnails");
         String filename = request.getParameter("filename");
-
-        if(thumbnails!=null){
-            uploadPath = uploadPath + "/thumbnails/";
-        }
 
         filename = uploadPath + filename;
 
